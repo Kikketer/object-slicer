@@ -64,3 +64,9 @@ This produces `build/stable-macos-arm64/OpenSlicer-stable.dmg` on macOS.
 ## License
 
 MIT License — see [LICENSE](LICENSE).
+
+## Support
+
+This is the new "FIFY" support model: Fork it, Fix it yourself.
+
+We are all using agents and LLMs to write most actual code these days, so you know what to do if you have an issue.  There are no PRs or Issues in this project.
