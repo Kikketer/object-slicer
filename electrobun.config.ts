@@ -2,8 +2,8 @@ import type { ElectrobunConfig } from "electrobun";
 
 export default {
 	app: {
-		name: "OpenSlicer",
-		identifier: "dev.openslicer.app",
+		name: "ObjectSlicer",
+		identifier: "dev.objectslicer.app",
 		version: "0.1.0",
 	},
 	build: {
@@ -18,12 +18,15 @@ export default {
 		watchIgnore: ["dist/**"],
 		mac: {
 			bundleCEF: false,
+			icons: "assets/icon.iconset",
 		},
 		linux: {
 			bundleCEF: false,
+			icon: "assets/ObjectSlicer.png",
 		},
 		win: {
 			bundleCEF: false,
+			icon: "assets/ObjectSlicer.ico",
 		},
 	},
 } satisfies ElectrobunConfig;

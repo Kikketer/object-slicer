@@ -1,6 +1,6 @@
-# OpenSlicer
+# ObjectSlicer
 
-OpenSlicer turns 3D models (STL) into flat 2D profiles ready for laser cutting, CNC routing, or interlocking assembly. Pick a slicing style and export nested sheets as SVG.
+ObjectSlicer turns 3D models (STL) into flat 2D profiles ready for laser cutting, CNC routing, or interlocking assembly. Pick a slicing style and export nested sheets as SVG.
 
 ## What it does
 
@@ -59,7 +59,7 @@ bun engine/spike-c.ts
 hutch run build
 ```
 
-This produces `build/stable-macos-arm64/OpenSlicer-stable.dmg` on macOS.
+This produces `build/stable-macos-arm64/ObjectSlicer-stable.dmg` on macOS.
 
 ## License
 

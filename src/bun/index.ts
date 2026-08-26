@@ -69,7 +69,7 @@ const rpc = BrowserView.defineRPC<AppRPC>({
         }
       },
       slice: async (params) => {
-        const output = path.join(os.tmpdir(), `openslicer-${Date.now()}.svg`);
+        const output = path.join(os.tmpdir(), `objectslicer-${Date.now()}.svg`);
         try {
           const result = await sliceStl({
             stlPath: params.stlPath,
@@ -131,7 +131,7 @@ const rpc = BrowserView.defineRPC<AppRPC>({
 
 ApplicationMenu.setApplicationMenu([
   {
-    label: "OpenSlicer",
+    label: "ObjectSlicer",
     submenu: [
       { label: "Quit", action: "quit", accelerator: "CommandOrControl+Q" },
     ],
@@ -162,10 +162,10 @@ async function getMainViewUrl(): Promise<string> {
 const url = await getMainViewUrl();
 
 new BrowserWindow({
-  title: "OpenSlicer",
+  title: "ObjectSlicer",
   url,
   frame: { width: 1100, height: 800, x: 100, y: 100 },
   rpc,
 });
 
-console.log("OpenSlicer main process started");
+console.log("ObjectSlicer main process started");
