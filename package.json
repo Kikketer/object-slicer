@@ -1,0 +1,18 @@
+{
+	"name": "electrobun-vanilla-vite",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Electrobun app with vanilla TypeScript and Vite HMR",
+	"dependencies": {
+		"maxrects-packer": "^2.7.4",
+		"polygon-clipping": "^0.15.7",
+		"three": "^0.173.0"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/three": "^0.173.0",
+		"concurrently": "^9.1.0",
+		"typescript": "^5.7.2",
+		"vite": "^6.0.3"
+	}
+}

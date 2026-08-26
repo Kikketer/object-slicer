@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.streamlit/
+.DS_Store
+.electrobun-app.hutch-template.lock
+.hutch/
+node_modules/
+build/
+dist/
+artifacts/
+.cottontail-tmp/
+*.tsbuildinfo

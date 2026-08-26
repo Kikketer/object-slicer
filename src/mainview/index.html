@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenSlicer</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>OpenSlicer</h1>
+        <p class="subtitle">STL &rarr; laser-ready SVG</p>
+      </header>
+      <main>
+        <section class="panel">
+          <div class="row">
+            <button id="pick-stl" class="primary">Pick STL</button>
+            <span id="stl-path" class="path">no file selected</span>
+          </div>
+          <div class="row">
+            <label>
+              Mode
+              <select id="mode">
+                <option value="stacked">Stacked</option>
+                <option value="interlocking">Interlocking</option>
+              </select>
+            </label>
+            <label>
+              Material (mm)
+              <input id="thickness" type="number" step="0.1" value="3" />
+            </label>
+            <label>
+              Pieces
+              <input id="count" type="number" step="1" min="2" value="5" />
+            </label>
+            <label>
+              Sheet W (mm)
+              <input id="sheet-w" type="number" value="330" />
+            </label>
+            <label>
+              Sheet H (mm)
+              <input id="sheet-h" type="number" value="330" />
+            </label>
+          </div>
+          <div class="row">
+            <button id="slice" class="primary">Generate SVG</button>
+            <button id="save" disabled>Save SVG</button>
+          </div>
+          <pre id="info" class="info"></pre>
+        </section>
+        <section class="preview-tabs">
+          <div class="tab-bar">
+            <button class="tab active" data-tab="3d">3D Preview</button>
+            <button class="tab" data-tab="svg">SVG</button>
+          </div>
+          <div id="tab-3d" class="tab-content active">
+            <section id="preview-3d" class="preview-3d"></section>
+          </div>
+          <div id="tab-svg" class="tab-content">
+            <section id="preview" class="preview-svg"></section>
+          </div>
+        </section>
+        <section id="selected-cut" class="selected-cut"></section>
+      </main>
+    </div>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

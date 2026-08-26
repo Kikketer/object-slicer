@@ -1,0 +1,16 @@
+{
+	"extends": "./.hutch/devkit/tsconfig.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"strict": true,
+		"moduleResolution": "bundler",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"ignoreDeprecations": "6.0",
+		"types": ["bun", "vite/client"]
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist", "build", "../../package/dist"]
+}
