@@ -13,9 +13,10 @@ type AppRPC = {
         mode: "stacked" | "interlocking";
         thickness: number;
         count: number;
+        scale: number;
         sheet: [number, number];
       };
-      saveSvg: { sheetsDir: string };
+      saveSvg: { sheetsDir: string; stlPath: string };
     };
   }>;
   webview: RPCSchema<{
@@ -100,6 +101,7 @@ const selectedCut = document.getElementById("selected-cut") as HTMLDivElement;
 const mode = document.getElementById("mode") as HTMLSelectElement;
 const thickness = document.getElementById("thickness") as HTMLInputElement;
 const count = document.getElementById("count") as HTMLInputElement;
+const scale = document.getElementById("scale") as HTMLInputElement;
 const sheetW = document.getElementById("sheet-w") as HTMLInputElement;
 const sheetH = document.getElementById("sheet-h") as HTMLInputElement;
 
@@ -166,6 +168,7 @@ sliceBtn.addEventListener("click", () => {
     mode: mode.value as "stacked" | "interlocking",
     thickness: parseFloat(thickness.value),
     count: parseInt(count.value, 10),
+    scale: parseFloat(scale.value),
     sheet: [parseFloat(sheetW.value), parseFloat(sheetH.value)],
   });
 });
@@ -173,7 +176,7 @@ sliceBtn.addEventListener("click", () => {
 saveBtn.addEventListener("click", () => {
   if (!currentSheetsDir) return;
   setInfo("Choose a folder to save sheet SVGs…");
-  rpc.send.saveSvg({ sheetsDir: currentSheetsDir });
+  rpc.send.saveSvg({ sheetsDir: currentSheetsDir, stlPath: currentStl });
 });
 
 document.querySelectorAll(".tab").forEach((tab) => {
@@ -183,6 +186,7 @@ document.querySelectorAll(".tab").forEach((tab) => {
     tab.classList.add("active");
     const name = (tab as HTMLElement).dataset.tab;
     document.getElementById(`tab-${name}`)?.classList.add("active");
+    selectedCut.style.display = name === "svg" ? "none" : "";
   });
 });
 

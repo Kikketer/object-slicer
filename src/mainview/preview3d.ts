@@ -11,11 +11,11 @@ export type PreviewSlice = {
   paths: number[][][];
 };
 
-const axisColors: Record<string, number> = { x: 0x00aaff, y: 0x00ff88, z: 0xffaa00 };
+const axisColors: Record<string, number> = { x: 0xd4b483, y: 0xc49a6b, z: 0x8f6a42 };
 
 export function createPreview3D(container: HTMLElement) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x1a1a2e);
+  scene.background = new THREE.Color(0xffffff);
 
   const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 5000);
   camera.position.set(150, 150, 150);
@@ -31,7 +31,7 @@ export function createPreview3D(container: HTMLElement) {
   const light = new THREE.DirectionalLight(0xffffff, 1.0);
   light.position.set(50, 100, 50);
   scene.add(light);
-  scene.add(new THREE.AmbientLight(0x404040));
+  scene.add(new THREE.AmbientLight(0xcccccc));
 
   const sliceGroup = new THREE.Group();
   scene.add(sliceGroup);
@@ -131,7 +131,7 @@ export function createPreview3D(container: HTMLElement) {
           side: THREE.DoubleSide,
           transparent: true,
           opacity: 0.85,
-          shininess: 60,
+          shininess: 5,
         });
         const mesh = new THREE.Mesh(geom, mat);
         mesh.userData = s;

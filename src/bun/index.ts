@@ -25,9 +25,10 @@ type AppRPC = {
         mode: "stacked" | "interlocking";
         thickness: number;
         count: number;
+        scale: number;
         sheet: [number, number];
       };
-      saveSvg: { sheetsDir: string };
+      saveSvg: { sheetsDir: string; stlPath: string };
     };
   }>;
   webview: RPCSchema<{
@@ -77,6 +78,7 @@ const rpc = BrowserView.defineRPC<AppRPC>({
             mode: params.mode,
             thickness: params.thickness,
             count: params.count,
+            scale: params.scale,
             sheet: params.sheet,
           });
           if (!result.ok || !result.output) {
@@ -100,7 +102,7 @@ const rpc = BrowserView.defineRPC<AppRPC>({
           rpc.send.sliceDone({ ok: false, error: String(e) });
         }
       },
-      saveSvg: async ({ sheetsDir }) => {
+      saveSvg: async ({ sheetsDir, stlPath }) => {
         try {
           const folders = await Utils.openFileDialog({
             canChooseFiles: false,
@@ -114,13 +116,16 @@ const rpc = BrowserView.defineRPC<AppRPC>({
             });
             return;
           }
+          const base = stlPath ? path.basename(stlPath, path.extname(stlPath)) : "sheets";
+          const outDir = path.join(folders[0], `${base}_sheets`);
+          await fs.promises.mkdir(outDir, { recursive: true });
           const files = await fs.promises.readdir(sheetsDir);
           for (const file of files) {
             const src = path.join(sheetsDir, file);
-            const dest = path.join(folders[0], file);
+            const dest = path.join(outDir, file);
             await fs.promises.copyFile(src, dest);
           }
-          rpc.send.saveDone({ ok: true, path: folders[0] });
+          rpc.send.saveDone({ ok: true, path: outDir });
         } catch (e) {
           rpc.send.saveDone({ ok: false, error: String(e) });
         }

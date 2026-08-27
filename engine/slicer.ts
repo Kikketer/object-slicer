@@ -446,7 +446,7 @@ function notchRect(u0: number, v0: number, v1: number, thickness: number): Polyg
 
 function applyDifference(subject: Vec2[][], clips: Polygon[]): Vec2[][] {
   if (clips.length === 0) return subject;
-  const result = polygonClipping.difference(subject as any, ...clips);
+  const result = polygonClipping.difference(subject as any, ...(clips as any[])) as any;
   const rings: Vec2[][] = [];
   for (const polygon of result) {
     for (const ring of polygon) {
@@ -516,20 +516,23 @@ function sliceInterlocking(
     yPieces.push(makePiece(`Y${j + 1}`, "y", y, thickness, rings));
   }
 
+  const splitXPieces = splitByIslands(xPieces);
+  const splitYPieces = splitByIslands(yPieces);
+
   // X pieces get bottom notches at each Y plane
-  const yLines = yPieces.map((p) => ({ u0: p.position, axis: "y" as const }));
-  for (const xp of xPieces) {
+  const yLines = splitYPieces.map((p) => ({ u0: p.position, axis: "y" as const }));
+  for (const xp of splitXPieces) {
     cutNotches(xp, yLines, "bottom");
   }
 
   // Y pieces get top notches at each X plane
-  const xLines = xPieces.map((p) => ({ u0: p.position, axis: "x" as const }));
-  for (const yp of yPieces) {
+  const xLines = splitXPieces.map((p) => ({ u0: p.position, axis: "x" as const }));
+  for (const yp of splitYPieces) {
     cutNotches(yp, xLines, "top");
   }
 
   return {
-    pieces: [...xPieces, ...yPieces],
+    pieces: [...splitXPieces, ...splitYPieces],
     info: {
       count: xPieces.length + yPieces.length,
       x_count: xPieces.length,
@@ -538,6 +541,134 @@ function sliceInterlocking(
       spacing_y: spY,
     },
   };
+}
+
+function indexToAlpha(n: number): string {
+  let s = "";
+  do {
+    s = String.fromCharCode(97 + (n % 26)) + s;
+    n = Math.floor(n / 26) - 1;
+  } while (n >= 0);
+  return s;
+}
+
+function splitPiece(piece: Piece, maxW: number, maxH: number): Piece[] {
+  if (piece.width <= maxW && piece.height <= maxH) return [piece];
+
+  const cols = Math.max(1, Math.ceil(piece.width / maxW));
+  const rows = Math.max(1, Math.ceil(piece.height / maxH));
+  const cellW = piece.width / cols;
+  const cellH = piece.height / rows;
+  const parts: Piece[] = [];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x0 = piece.bounds.min[0] + c * cellW;
+      const x1 = x0 + cellW;
+      const y0 = piece.bounds.min[1] + r * cellH;
+      const y1 = y0 + cellH;
+      const clip = [
+        [
+          [x0, y0],
+          [x1, y0],
+          [x1, y1],
+          [x0, y1],
+          [x0, y0],
+        ],
+      ] as any;
+
+      const outerSign = Math.sign(ringArea(piece.rings[0]));
+      const rings: Vec2[][] = [];
+      for (const pr of piece.rings) {
+        const clipped = polygonClipping.intersection([pr as any], clip as any) as any;
+        for (const polygon of clipped) {
+          for (const ring of polygon) {
+            const r2 = ring as unknown as Vec2[];
+            if (r2.length < 3 || Math.abs(ringArea(r2)) < 1e-9) continue;
+            rings.push(r2);
+          }
+        }
+      }
+      if (rings.length === 0) continue;
+      if (!rings.some((r) => Math.sign(ringArea(r)) === outerSign)) continue;
+
+      const sub = makePiece(
+        `${piece.id}${indexToAlpha(parts.length)}`,
+        piece.axis,
+        piece.position,
+        piece.thickness,
+        rings,
+      );
+      sub.base_id = piece.id;
+      parts.push(sub);
+    }
+  }
+
+  return parts.length ? parts : [piece];
+}
+
+function splitByIslands(pieces: Piece[]): Piece[] {
+  const result: Piece[] = [];
+  for (const piece of pieces) {
+    if (piece.rings.length < 2) {
+      result.push(piece);
+      continue;
+    }
+
+    const outerSign = Math.sign(ringArea(piece.rings[0]));
+    const outers: { ring: Vec2[]; bounds: { min: Vec2; max: Vec2 } }[] = [];
+    const holes: { ring: Vec2[]; bounds: { min: Vec2; max: Vec2 } }[] = [];
+
+    for (const ring of piece.rings) {
+      const bounds = pieceBounds([ring]);
+      if (Math.sign(ringArea(ring)) === outerSign) {
+        outers.push({ ring, bounds });
+      } else {
+        holes.push({ ring, bounds });
+      }
+    }
+
+    if (outers.length <= 1) {
+      result.push(piece);
+      continue;
+    }
+
+    const parts: Piece[] = [];
+    for (const outer of outers) {
+      const groupRings: Vec2[][] = [outer.ring];
+      for (const hole of holes) {
+        if (
+          hole.bounds.min[0] >= outer.bounds.min[0] - 1e-9 &&
+          hole.bounds.max[0] <= outer.bounds.max[0] + 1e-9 &&
+          hole.bounds.min[1] >= outer.bounds.min[1] - 1e-9 &&
+          hole.bounds.max[1] <= outer.bounds.max[1] + 1e-9
+        ) {
+          groupRings.push(hole.ring);
+        }
+      }
+
+      const sub = makePiece(
+        `${piece.id}${indexToAlpha(parts.length)}`,
+        piece.axis,
+        piece.position,
+        piece.thickness,
+        groupRings,
+      );
+      sub.base_id = piece.id;
+      parts.push(sub);
+    }
+
+    result.push(...(parts.length > 0 ? parts : [piece]));
+  }
+  return result;
+}
+
+function splitOversizedPieces(pieces: Piece[], maxW: number, maxH: number): Piece[] {
+  const result: Piece[] = [];
+  for (const piece of pieces) {
+    result.push(...splitPiece(piece, maxW, maxH));
+  }
+  return result;
 }
 
 function packSheets(
@@ -562,7 +693,7 @@ function packSheets(
       width: p.width,
       height: p.height,
       data: p,
-    })),
+    } as any)),
   );
 
   const sheets = [] as {
@@ -717,7 +848,11 @@ export async function sliceStl(options: SliceOptions): Promise<SliceResult> {
     if (pieces.length === 0) throw new Error("slicing produced no usable pieces");
 
     const [sheetW, sheetH] = sheet;
-    const sheets = packSheets(pieces, sheetW, sheetH, margin, spacing);
+    const binW = Math.max(1, sheetW - 2 * margin);
+    const binH = Math.max(1, sheetH - 2 * margin);
+    const splitPieces = mode === "stacked" ? splitByIslands(pieces) : pieces;
+    const fittedPieces = splitOversizedPieces(splitPieces, binW, binH);
+    const sheets = packSheets(fittedPieces, sheetW, sheetH, margin, spacing);
     if (sheets.length === 0) throw new Error("slicing produced no pieces that fit the sheet");
 
     const { combined, perSheet } = emitSheets(sheets, sheetW, sheetH, margin, spacing);
@@ -733,10 +868,10 @@ export async function sliceStl(options: SliceOptions): Promise<SliceResult> {
       ok: true,
       output,
       sheets: sheets.length,
-      parts: pieces.length,
+      parts: fittedPieces.length,
       info,
       sheetsDir,
-      preview: buildPreview(pieces),
+      preview: buildPreview(fittedPieces),
     };
   } catch (err) {
     return { ok: false, error: String(err) };
