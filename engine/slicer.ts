@@ -767,16 +767,12 @@ function emitSheets(
 
     combined.push(`    <g id="sheet-${s + 1}">`);
     combined.push(
-      `      <rect x="${left.toFixed(3)}" y="${top.toFixed(3)}" width="${sheetW.toFixed(3)}" height="${sheetH.toFixed(3)}" fill="none" stroke="#333333" stroke-width="0.5"/>`,
-    );
-    combined.push(
       `      <text x="${(left + 2).toFixed(3)}" y="${(top + 5).toFixed(3)}" font-size="5" fill="#0000aa" dominant-baseline="hanging">Sheet ${s + 1}</text>`,
     );
 
     const per: string[] = [
       svgHeader(sheetW, sheetH),
       '  <g id="sheet">',
-      `    <rect x="0" y="0" width="${sheetW.toFixed(1)}" height="${sheetH.toFixed(1)}" fill="none" stroke="#333333" stroke-width="0.5"/>`,
     ];
 
     for (const placed of sheets[s].placed) {
