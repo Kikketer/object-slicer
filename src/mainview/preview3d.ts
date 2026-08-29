@@ -90,6 +90,7 @@ export function createPreview3D(container: HTMLElement) {
       slices = data;
       onSelect = selectCb;
       sliceGroup.clear();
+      sliceGroup.scale.set(1, 1, 1);
       for (const s of data) {
         const shape = new THREE.Shape();
         if (!s.paths.length) continue;
@@ -135,6 +136,12 @@ export function createPreview3D(container: HTMLElement) {
         mesh.userData = s;
         sliceGroup.add(mesh);
       }
+
+      const rawBox = new THREE.Box3().setFromObject(sliceGroup);
+      const rawSize = rawBox.getSize(new THREE.Vector3());
+      const rawDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
+      const scale = rawDim > 0 ? 200 / rawDim : 1;
+      sliceGroup.scale.setScalar(scale);
 
       const box = new THREE.Box3().setFromObject(sliceGroup);
       const center = box.getCenter(new THREE.Vector3());
