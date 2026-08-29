@@ -57,12 +57,8 @@ export function createPreview3D(container: HTMLElement) {
       const mat = m.material as THREE.MeshPhongMaterial;
       if (activeId && m.userData.id === activeId) {
         mat.emissive.setHex(0xff5500);
-        mat.opacity = 1.0;
-        mat.transparent = false;
       } else {
         mat.emissive.setHex(0x000000);
-        mat.opacity = 0.85;
-        mat.transparent = true;
       }
     });
   }
@@ -100,11 +96,13 @@ export function createPreview3D(container: HTMLElement) {
         const ext = s.paths[0];
         shape.moveTo(ext[0][0], ext[0][1]);
         for (let i = 1; i < ext.length; i++) shape.lineTo(ext[i][0], ext[i][1]);
+        shape.closePath();
         for (let h = 1; h < s.paths.length; h++) {
           const hole = s.paths[h];
           const path = new THREE.Path();
           path.moveTo(hole[0][0], hole[0][1]);
           for (let i = 1; i < hole.length; i++) path.lineTo(hole[i][0], hole[i][1]);
+          path.closePath();
           shape.holes.push(path);
         }
         const geom = new THREE.ExtrudeGeometry(shape, {
@@ -129,8 +127,8 @@ export function createPreview3D(container: HTMLElement) {
         const mat = new THREE.MeshPhongMaterial({
           color: axisColors[s.axis] ?? 0xcccccc,
           side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 0.85,
+          transparent: false,
+          opacity: 1.0,
           shininess: 5,
         });
         const mesh = new THREE.Mesh(geom, mat);
