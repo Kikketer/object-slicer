@@ -353,6 +353,19 @@ function makeTransform(
   ];
 }
 
+function pointInRing(ring: Vec2[], pt: Vec2): boolean {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if ((yi > pt[1]) !== (yj > pt[1])) {
+      const xint = (pt[1] - yi) * (xj - xi) / (yj - yi) + xi;
+      if (pt[0] < xint) inside = !inside;
+    }
+  }
+  return inside;
+}
+
 function makePiece(
   id: string,
   axis: "x" | "y" | "z",
@@ -362,6 +375,19 @@ function makePiece(
 ): Piece {
   rings = rings.slice();
   rings.sort((a, b) => Math.abs(ringArea(b)) - Math.abs(ringArea(a)));
+
+  if (rings.length > 0) {
+    if (ringArea(rings[0]) < 0) rings[0] = rings[0].slice().reverse();
+    for (let i = 1; i < rings.length; i++) {
+      const inside = pointInRing(rings[0], ringCentroid(rings[i]));
+      const a = ringArea(rings[i]);
+      if (inside && a > 0) {
+        rings[i] = rings[i].slice().reverse();
+      } else if (!inside && a < 0) {
+        rings[i] = rings[i].slice().reverse();
+      }
+    }
+  }
 
   const bounds = pieceBounds(rings);
   return {
@@ -788,12 +814,13 @@ function emitSheets(
       const lxP = oxP + label[0];
       const lyP = sheetH - (oyP + label[1]);
 
+      let dC = "";
       for (const ring of p.rings) {
-        const dC = ringPath(ring, oxC, oyC, top, sheetH);
         const dP = ringPath(ring, oxP, oyP, 0, sheetH);
-        combined.push(`      <path d="${dC}" fill="none" stroke="#cc0000" stroke-width="0.2"/>`);
+        dC += ringPath(ring, oxC, oyC, top, sheetH) + " ";
         per.push(`    <path d="${dP}" fill="none" stroke="#cc0000" stroke-width="0.2"/>`);
       }
+      combined.push(`      <path d="${dC}" fill="#d4b483" fill-rule="evenodd" stroke="#cc0000" stroke-width="0.2"/>`);
 
       combined.push(
         `      <text x="${lxC.toFixed(3)}" y="${lyC.toFixed(3)}" font-size="4" text-anchor="middle" dominant-baseline="central" fill="#0000aa">${p.id}</text>`,
