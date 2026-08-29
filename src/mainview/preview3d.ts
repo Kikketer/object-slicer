@@ -135,6 +135,16 @@ export function createPreview3D(container: HTMLElement) {
         mesh.userData = s;
         sliceGroup.add(mesh);
       }
+
+      const box = new THREE.Box3().setFromObject(sliceGroup);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const dist = maxDim * 1.5 || 150;
+      controls.target.copy(center);
+      camera.position.set(center.x + dist, center.y + dist, center.z + dist);
+      camera.lookAt(center);
+      controls.update();
     },
     highlight: (slice: PreviewSlice) => updateMaterials(slice.id),
     clearHighlight: () => updateMaterials(undefined),
