@@ -91,6 +91,7 @@ export function createPreview3D(container: HTMLElement) {
       onSelect = selectCb;
       sliceGroup.clear();
       sliceGroup.scale.set(1, 1, 1);
+      sliceGroup.position.set(0, 0, 0);
       for (const s of data) {
         const shape = new THREE.Shape();
         if (!s.paths.length) continue;
@@ -138,19 +139,17 @@ export function createPreview3D(container: HTMLElement) {
       }
 
       const rawBox = new THREE.Box3().setFromObject(sliceGroup);
+      const rawCenter = rawBox.getCenter(new THREE.Vector3());
       const rawSize = rawBox.getSize(new THREE.Vector3());
       const rawDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
       const scale = rawDim > 0 ? 200 / rawDim : 1;
       sliceGroup.scale.setScalar(scale);
+      sliceGroup.position.set(-rawCenter.x * scale, -rawCenter.y * scale, -rawCenter.z * scale);
 
-      const box = new THREE.Box3().setFromObject(sliceGroup);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const dist = maxDim * 1.5 || 150;
-      controls.target.copy(center);
-      camera.position.set(center.x + dist, center.y + dist, center.z + dist);
-      camera.lookAt(center);
+      const dist = 300;
+      controls.target.set(0, 0, 0);
+      camera.position.set(dist, dist, dist);
+      camera.lookAt(0, 0, 0);
       controls.update();
     },
     highlight: (slice: PreviewSlice) => updateMaterials(slice.id),
