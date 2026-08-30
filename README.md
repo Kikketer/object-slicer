@@ -41,6 +41,32 @@ hutch run start
 
 The first run builds the front-end assets and launches the desktop window. Use **Pick STL**, choose a mode, set your sheet size, and generate SVG sheets. Try the included `Whale.stl` for a full workflow.
 
+## Screenshots
+
+The controls:
+
+![ObjectSlicer controls](docs/SCR-20260830-jlvy.png)
+
+Stacked mode preview:
+
+![Stacked mode](docs/SCR-20260830-jmfq.png)
+
+Interlocking mode preview:
+
+![Interlocking mode](docs/SCR-20260830-jmlg.png)
+
+Generated sheets:
+
+![Generated sheets](docs/SCR-20260830-jmsh.png)
+
+Sample SVG output:
+
+![SVG output](docs/SCR-20260830-jnqq.png)
+
+Sliced model preview:
+
+![Sliced model](docs/SCR-20260829-qcgf.png)
+
 ## Running the engine from the command line
 
 You can exercise the engine directly with the small test scripts in `engine/`:

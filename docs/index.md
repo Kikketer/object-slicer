@@ -9,15 +9,21 @@ ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter o
 
 It is a small [Electrobun](https://electrobun.dev) desktop app with a TypeScript/Bun slicing engine. No Python, no cloud service, no paid tier.
 
+![Sliced Whale model preview](SCR-20260829-qcgf.png)
+
 ## The two slicing modes
 
 ### Stacked
 
 Stacked mode cuts parallel slices along the Z (height) axis. Each piece is a full cross-section of the model at a different height. You get a neat stack of sheets that you pile in order to recreate the 3D form. It is the classic "layer cake" look. The pieces are not designed to lock to each other, so you can glue them, clamp them, or leave them loose.
 
+![Stacked mode preview](SCR-20260830-jmfq.png)
+
 ### Interlocking
 
 Interlocking mode cuts slices along two perpendicular axes, X and Y. The result is a grid of cross-sections that slot together with material-thickness notches. Every X piece and every Y piece gets half-notches where they meet, so the whole model stands up on its own with no glue or fasteners. The material thickness setting matters here, because the notches are sized to that value.
+
+![Interlocking mode preview](SCR-20260830-jmlg.png)
 
 ## How to use it
 
@@ -29,6 +35,14 @@ Interlocking mode cuts slices along two perpendicular axes, X and Y. The result 
 6. Save the SVG sheets and cut them.
 
 If you prefer the command line, the slicing engine lives in `engine/slicer.ts` and can be called from a small Bun script.
+
+### What the flow looks like
+
+![ObjectSlicer controls](SCR-20260830-jlvy.png)
+
+![Generated SVG sheets](SCR-20260830-jmsh.png)
+
+![Sample SVG output](SCR-20260830-jnqq.png)
 
 ## Expectations
 
