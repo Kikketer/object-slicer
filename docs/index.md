@@ -9,6 +9,16 @@ ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter o
 
 It is a small [Electrobun](https://electrobun.dev) desktop app with a TypeScript/Bun slicing engine. No Python, no cloud service, no paid tier.
 
+Source code is on [GitHub](https://github.com/Kikketer/object-slicer).
+
+## Getting started
+
+1. Install [Hutch](https://electrobun.dev) from the Electrobun docs.
+2. Clone or download the repo from [GitHub](https://github.com/Kikketer/object-slicer).
+3. Run `hutch electrobun run` to start the app.
+
+This has only been tested on a Mac.
+
 ## The two slicing modes
 
 ### Stacked
