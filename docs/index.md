@@ -9,8 +9,6 @@ ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter o
 
 It is a small [Electrobun](https://electrobun.dev) desktop app with a TypeScript/Bun slicing engine. No Python, no cloud service, no paid tier.
 
-![Sliced Whale model preview](SCR-20260829-qcgf.png)
-
 ## The two slicing modes
 
 ### Stacked

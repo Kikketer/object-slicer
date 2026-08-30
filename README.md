@@ -63,10 +63,6 @@ Sample SVG output:
 
 ![SVG output](docs/SCR-20260830-jnqq.png)
 
-Sliced model preview:
-
-![Sliced model](docs/SCR-20260829-qcgf.png)
-
 ## Running the engine from the command line
 
 You can exercise the engine directly with the small test scripts in `engine/`:
