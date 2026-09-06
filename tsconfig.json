@@ -11,6 +11,6 @@
 		"ignoreDeprecations": "6.0",
 		"types": ["bun", "vite/client"]
 	},
-	"include": ["src"],
+	"include": ["src", "test"],
 	"exclude": ["node_modules", "dist", "build", "../../package/dist"]
 }

@@ -3,6 +3,10 @@
 	"version": "1.0.0",
 	"type": "module",
 	"description": "Electrobun app with vanilla TypeScript and Vite HMR",
+	"scripts": {
+		"test": "bun test",
+		"test:update": "bun test/fixtures/update-fixtures.ts"
+	},
 	"dependencies": {
 		"maxrects-packer": "^2.7.4",
 		"polygon-clipping": "^0.15.7",
