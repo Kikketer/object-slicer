@@ -436,7 +436,18 @@ function sliceStacked(
   };
 }
 
-function lineBounds(rings: Vec2[][], u0: number): { low: number; high: number } | null {
+function pointInRings(rings: Vec2[][], pt: Vec2): boolean {
+  let inside = false;
+  for (const ring of rings) {
+    const inRing = pointInRing(ring, pt);
+    if (!inRing) continue;
+    if (ringArea(ring) > 0) inside = true;
+    else inside = false;
+  }
+  return inside;
+}
+
+function lineSegments(rings: Vec2[][], u0: number, eps = 1e-7): [number, number][] {
   const vs: number[] = [];
   for (const ring of rings) {
     for (let i = 0; i < ring.length; i++) {
@@ -444,15 +455,28 @@ function lineBounds(rings: Vec2[][], u0: number): { low: number; high: number } 
       const p2 = ring[(i + 1) % ring.length];
       const u1 = p1[0];
       const u2 = p2[0];
-      if (u1 === u2) continue;
-      if (u0 < Math.min(u1, u2) || u0 > Math.max(u1, u2)) continue;
+      if (Math.abs(u2 - u1) < eps) continue;
+      if (u0 < Math.min(u1, u2) - eps || u0 > Math.max(u1, u2) + eps) continue;
       const t = (u0 - u1) / (u2 - u1);
       const v = p1[1] + t * (p2[1] - p1[1]);
       vs.push(v);
     }
   }
-  if (vs.length < 2) return null;
-  return { low: Math.min(...vs), high: Math.max(...vs) };
+  if (vs.length < 2) return [];
+  vs.sort((a, b) => a - b);
+  const clean: number[] = [vs[0]];
+  for (let i = 1; i < vs.length; i++) {
+    if (Math.abs(vs[i] - clean[clean.length - 1]) > eps) clean.push(vs[i]);
+  }
+  const segs: [number, number][] = [];
+  for (let i = 0; i < clean.length - 1; i++) {
+    const a = clean[i];
+    const b = clean[i + 1];
+    if (b - a < eps) continue;
+    const mid = (a + b) / 2;
+    if (pointInRings(rings, [u0, mid])) segs.push([a, b]);
+  }
+  return segs;
 }
 
 type Polygon = number[][][];
@@ -491,13 +515,14 @@ function cutNotches(
 ): void {
   const clips: Polygon[] = [];
   for (const line of cutLines) {
-    const b = lineBounds(piece.rings, line.u0);
-    if (!b) continue;
-    const mid = (b.low + b.high) / 2;
-    if (take === "bottom") {
-      clips.push(notchRect(line.u0, b.low - 0.01, mid, piece.thickness));
-    } else {
-      clips.push(notchRect(line.u0, mid, b.high + 0.01, piece.thickness));
+    const segs = lineSegments(piece.rings, line.u0);
+    for (const [low, high] of segs) {
+      const mid = (low + high) / 2;
+      if (take === "bottom") {
+        clips.push(notchRect(line.u0, low - 0.01, mid, piece.thickness));
+      } else {
+        clips.push(notchRect(line.u0, mid, high + 0.01, piece.thickness));
+      }
     }
   }
   if (clips.length === 0) return;
