@@ -11,6 +11,18 @@ import * as os from "os";
 import * as path from "path";
 import { sliceStl } from "../../engine/slicer.ts";
 
+type SliceInputs = {
+  stlPath: string;
+  mode: "stacked" | "interlocking";
+  thickness: number;
+  count: number;
+  scale: number;
+  sheet: [number, number];
+};
+
+let lastInputs: SliceInputs | null = null;
+let lastSummary: { sheets?: number; parts?: number; info?: unknown } | null = null;
+
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`;
 
@@ -89,6 +101,12 @@ const rpc = BrowserView.defineRPC<AppRPC>({
             return;
           }
           const svg = await Bun.file(result.output).text();
+          lastInputs = params;
+          lastSummary = {
+            sheets: result.sheets,
+            parts: result.parts,
+            info: result.info,
+          };
           rpc.send.sliceDone({
             ok: true,
             svg,
@@ -104,7 +122,16 @@ const rpc = BrowserView.defineRPC<AppRPC>({
       },
       saveSvg: async ({ sheetsDir, stlPath }) => {
         try {
+          const home = os.homedir();
+          const downloads = path.join(home, "Downloads");
+          const documents = path.join(home, "Documents");
+          const startingFolder = fs.existsSync(downloads)
+            ? downloads
+            : fs.existsSync(documents)
+              ? documents
+              : home;
           const folders = await Utils.openFileDialog({
+            startingFolder,
             canChooseFiles: false,
             canChooseDirectory: true,
             allowsMultipleSelection: false,
@@ -124,6 +151,18 @@ const rpc = BrowserView.defineRPC<AppRPC>({
             const src = path.join(sheetsDir, file);
             const dest = path.join(outDir, file);
             await fs.promises.copyFile(src, dest);
+          }
+          if (lastInputs) {
+            const record = {
+              savedAt: new Date().toISOString(),
+              inputs: lastInputs,
+              summary: lastSummary,
+            };
+            await fs.promises.writeFile(
+              path.join(outDir, "slice-info.txt"),
+              JSON.stringify(record, null, 2),
+              "utf8",
+            );
           }
           rpc.send.saveDone({ ok: true, path: outDir });
         } catch (e) {
