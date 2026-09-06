@@ -533,6 +533,23 @@ function cutNotches(
   piece.height = piece.bounds.max[1] - piece.bounds.min[1];
 }
 
+function cutInterlockingNotches(pieces: Piece[]): void {
+  const xPieces = pieces.filter((p) => p.axis === "x");
+  const yPieces = pieces.filter((p) => p.axis === "y");
+
+  const yPositions = new Set(yPieces.map((p) => p.position));
+  const yLines = [...yPositions].map((u0) => ({ u0, axis: "y" as const }));
+  for (const xp of xPieces) {
+    cutNotches(xp, yLines, "bottom");
+  }
+
+  const xPositions = new Set(xPieces.map((p) => p.position));
+  const xLines = [...xPositions].map((u0) => ({ u0, axis: "x" as const }));
+  for (const yp of yPieces) {
+    cutNotches(yp, xLines, "top");
+  }
+}
+
 function sliceInterlocking(
   positions: Float32Array,
   indices: Uint32Array,
@@ -569,18 +586,6 @@ function sliceInterlocking(
 
   const splitXPieces = splitByIslands(xPieces);
   const splitYPieces = splitByIslands(yPieces);
-
-  // X pieces get bottom notches at each Y plane
-  const yLines = splitYPieces.map((p) => ({ u0: p.position, axis: "y" as const }));
-  for (const xp of splitXPieces) {
-    cutNotches(xp, yLines, "bottom");
-  }
-
-  // Y pieces get top notches at each X plane
-  const xLines = splitXPieces.map((p) => ({ u0: p.position, axis: "x" as const }));
-  for (const yp of splitYPieces) {
-    cutNotches(yp, xLines, "top");
-  }
 
   return {
     pieces: [...splitXPieces, ...splitYPieces],
@@ -899,7 +904,10 @@ export async function sliceStl(options: SliceOptions): Promise<SliceResult> {
     const binW = Math.max(1, sheetW - 2 * margin);
     const binH = Math.max(1, sheetH - 2 * margin);
     const splitPieces = mode === "stacked" ? splitByIslands(pieces) : pieces;
-    const fittedPieces = splitOversizedPieces(splitPieces, binW, binH);
+    let fittedPieces = splitOversizedPieces(splitPieces, binW, binH);
+    if (mode === "interlocking") {
+      cutInterlockingNotches(fittedPieces);
+    }
     const sheets = packSheets(fittedPieces, sheetW, sheetH, margin, spacing);
     if (sheets.length === 0) throw new Error("slicing produced no pieces that fit the sheet");
 
