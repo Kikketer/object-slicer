@@ -7,6 +7,7 @@ export default {
 		hmr: "hutch electrobun prepare && hutch pm exec -- vite --port 5173",
 		build: "hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=stable",
 		"build:canary": "hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=canary",
+		"build:signed": "bash -c 'set -a; source release.env; set +a; hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=stable'",
 	},
 	electrobun: {
 		version: "2.0.1",

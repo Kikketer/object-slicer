@@ -2,9 +2,9 @@ import type { ElectrobunConfig } from "electrobun";
 
 export default {
 	app: {
-		name: "ObjectSlicer",
-		identifier: "dev.objectslicer.app",
-		version: "0.1.0",
+		name: "Object Slicer",
+		identifier: "com.cjweed.objectslicer",
+		version: "1.0.0",
 	},
 	build: {
 		mainProcess: "cottontail",
@@ -19,6 +19,9 @@ export default {
 		mac: {
 			bundleCEF: false,
 			icons: "assets/icon.iconset",
+			codesign: true,
+			notarize: true,
+			createDmg: true,
 		},
 		linux: {
 			bundleCEF: false,

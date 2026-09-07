@@ -11,3 +11,4 @@ dist/
 artifacts/
 .cottontail-tmp/
 *.tsbuildinfo
+release.env

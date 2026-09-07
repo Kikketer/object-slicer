@@ -25,7 +25,13 @@ The main interface is an **Electrobun desktop app**. The slicing engine is pure 
 └── LICENSE                  # MIT
 ```
 
+## Download
+
+Prebuilt, signed and notarized macOS builds (Apple Silicon) are on the [Releases page](https://github.com/Kikketer/object-slicer/releases). Download the DMG, open it, and drag ObjectSlicer to Applications.
+
 ## Requirements
+
+To build from source you need:
 
 - [Bun](https://bun.sh)
 - [hutch](https://electrobun.dev) from the Electrobun tooling
@@ -81,7 +87,7 @@ bun engine/spike-c.ts
 hutch run build
 ```
 
-This produces `build/stable-macos-arm64/ObjectSlicer-stable.dmg` on macOS.
+This produces a signed, notarized DMG in `artifacts/` on macOS. Code signing requires a Developer ID certificate and notarization credentials — copy `release.env.example` to `release.env` and fill it in, then use `./scripts/release.sh vX.Y.Z` to build, verify, and publish a GitHub release. For unsigned local builds, set `codesign`/`notarize` to `false` in `electrobun.config.ts`.
 
 ## License
 

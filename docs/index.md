@@ -5,19 +5,21 @@ description: STL to laser-ready SVG, stacked or interlocking.
 
 # ObjectSlicer
 
-ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter or CNC router. The output is a set of SVG sheets with cut paths and labels, packed to fit the material size you pick.
+<img src="icon.png" alt="ObjectSlicer icon" width="128" />
 
-It is a small [Electrobun](https://electrobun.dev) desktop app with a TypeScript/Bun slicing engine. No Python, no cloud service, no paid tier.
+ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter or CNC router. The output is a set of SVG sheets with cut paths, labels, interlocking grooves and packed to fit the material size you pick.
+
+Unlike other options, this is free to use and actually works. It's been proven out on large objects with a variety of shapes. But don't assume all shapes will work perfectly, I've only tested on things I've personally cut.
 
 Source code is on [GitHub](https://github.com/Kikketer/object-slicer).
 
 ## Getting started
 
-1. Install [Hutch](https://electrobun.dev) from the Electrobun docs.
-2. Clone or download the repo from [GitHub](https://github.com/Kikketer/object-slicer).
-3. Run `hutch electrobun run` to start the app.
+### Download the app (macOS)
 
-This has only been tested on a Mac.
+Grab the latest signed and notarized DMG from the [Releases page](https://github.com/Kikketer/object-slicer/releases), open it, and drag ObjectSlicer into your Applications folder. It is signed with a Developer ID and notarized by Apple, so it opens like any other Mac app — no right-click tricks needed.
+
+Apple Silicon Macs only for now.
 
 ## The two slicing modes
 
@@ -61,3 +63,11 @@ This is not a perfect implementation, and it is not especially clever. It does e
 This project uses the **FIFIY** model: **Fork it, Fix it Yourself**.
 
 These days the internet is full of agents and LLMs throwing code at repositories. I do not want to spend time triaging issues, reviewing pull requests, or sifting through AI slop to find the one useful change. If you need a fix, a feature, or a different workflow, fork the repo, ask your favorite model to modify it, and keep the result. The source is MIT licensed and is right here.
+
+### Build from source
+
+1. Install [Bun](https://bun.sh) and [Hutch](https://electrobun.dev) from the Electrobun docs.
+2. Clone or download the repo from [GitHub](https://github.com/Kikketer/object-slicer).
+3. Run `hutch install` then `hutch run start` to launch the app.
+
+This has only been tested on a Mac.
