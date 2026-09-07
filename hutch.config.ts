@@ -8,6 +8,7 @@ export default {
 		build: "hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=stable",
 		"build:canary": "hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=canary",
 		"build:signed": "bash -c 'set -a; source release.env; set +a; hutch electrobun prepare && hutch pm exec -- vite build && hutch electrobun build --env=stable'",
+		release: "bash -c 'set -a; source release.env; set +a; ./scripts/release.sh \"$@\"' bash",
 	},
 	electrobun: {
 		version: "2.0.1",

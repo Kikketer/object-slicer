@@ -87,7 +87,13 @@ bun engine/spike-c.ts
 hutch run build
 ```
 
-This produces a signed, notarized DMG in `artifacts/` on macOS. Code signing requires a Developer ID certificate and notarization credentials — copy `release.env.example` to `release.env` and fill it in, then use `./scripts/release.sh vX.Y.Z` to build, verify, and publish a GitHub release. For unsigned local builds, set `codesign`/`notarize` to `false` in `electrobun.config.ts`.
+This produces a signed, notarized DMG in `artifacts/` on macOS. Code signing requires a Developer ID certificate and notarization credentials — copy `release.env.example` to `release.env` and fill it in, then run a release with:
+
+```bash
+hutch run release v0.1.0
+```
+
+That builds, verifies the signature and notarization, and creates a GitHub release with the DMG attached. Run `hutch run release` without a tag to build and verify without publishing. You can also use `./scripts/release.sh v0.1.0` directly. For unsigned local builds, set `codesign`/`notarize` to `false` in `electrobun.config.ts`.
 
 ## License
 
