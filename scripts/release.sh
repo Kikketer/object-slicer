@@ -35,9 +35,7 @@ if [[ ! -f "$ELECTROBUN_APPLEAPIKEYPATH" ]]; then
 fi
 
 echo "==> Building (codesign + notarize)"
-hutch electrobun prepare
-hutch pm exec -- vite build
-hutch electrobun build --env=stable
+bun run build
 
 APP=$(find build/stable-macos-arm64 -maxdepth 1 -name "*.app" | head -1)
 DMG=$(find artifacts -maxdepth 1 -name "*.dmg" | head -1)

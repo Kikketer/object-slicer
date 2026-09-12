@@ -34,15 +34,14 @@ Prebuilt, signed and notarized macOS builds (Apple Silicon) are on the [Releases
 To build from source you need:
 
 - [Bun](https://bun.sh)
-- [hutch](https://electrobun.dev) from the Electrobun tooling
 
 ## Quick start
 
 Install dependencies and start the desktop app:
 
 ```bash
-hutch install
-hutch run start
+bun install
+bun run start
 ```
 
 The first run builds the front-end assets and launches the desktop window. Use **Pick STL**, choose a mode, set your sheet size, and generate SVG sheets. Try the included `Whale.stl` for a full workflow.
@@ -84,16 +83,16 @@ bun engine/spike-c.ts
 ## Building the desktop app
 
 ```bash
-hutch run build
+bun run build
 ```
 
 This produces a signed, notarized DMG in `artifacts/` on macOS. Code signing requires a Developer ID certificate and notarization credentials — copy `release.env.example` to `release.env` and fill it in, then run a release with:
 
 ```bash
-hutch run release v0.1.0
+bun run release v0.1.0
 ```
 
-That builds, verifies the signature and notarization, and creates a GitHub release with the DMG attached. Run `hutch run release` without a tag to build and verify without publishing. You can also use `./scripts/release.sh v0.1.0` directly. For unsigned local builds, set `codesign`/`notarize` to `false` in `electrobun.config.ts`.
+That builds, verifies the signature and notarization, and creates a GitHub release with the DMG attached. Run `bun run release` without a tag to build and verify without publishing. You can also use `./scripts/release.sh v0.1.0` directly. For unsigned local builds, set `codesign`/`notarize` to `false` in `electrobun.config.ts`.
 
 ## License
 

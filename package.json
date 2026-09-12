@@ -5,7 +5,15 @@
 	"description": "Electrobun app with vanilla TypeScript and Vite HMR",
 	"scripts": {
 		"test": "bun test",
-		"test:update": "bun test/fixtures/update-fixtures.ts"
+		"test:update": "bun test/fixtures/update-fixtures.ts",
+		"dev:hmr": "concurrently \"bun run hmr\" \"bun run start\"",
+		"hmr": "electrobun prepare && vite --port 5173",
+		"start": "electrobun prepare && vite build && electrobun dev",
+		"dev": "electrobun prepare && vite build && electrobun dev --watch",
+		"build": "electrobun prepare && vite build && electrobun build --env=stable",
+		"build:canary": "electrobun prepare && vite build && electrobun build --env=canary",
+		"build:signed": "bash -c 'set -a; source release.env; set +a; bun run build'",
+		"release": "bash -c 'set -a; source release.env; set +a; ./scripts/release.sh \"$@\"' bash"
 	},
 	"dependencies": {
 		"maxrects-packer": "^2.7.4",
@@ -16,6 +24,7 @@
 		"@types/bun": "latest",
 		"@types/three": "^0.173.0",
 		"concurrently": "^9.1.0",
+		"electrobun": "2.0.1",
 		"typescript": "^5.7.2",
 		"vite": "^6.0.3"
 	}
