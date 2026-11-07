@@ -5,8 +5,6 @@ description: STL to laser-ready SVG, stacked or interlocking.
 
 # ObjectSlicer
 
-<img src="icon.png" alt="ObjectSlicer icon" width="128" />
-
 ObjectSlicer turns a 3D STL model into flat 2D sheets ready for a laser cutter or CNC router. The output is a set of SVG sheets with cut paths, labels, interlocking grooves and packed to fit the material size you pick.
 
 Unlike other options, this is free to use and actually works. It's been proven out on large objects with a variety of shapes. But don't assume all shapes will work perfectly, I've only tested on things I've personally cut.
